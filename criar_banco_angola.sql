@@ -1,0 +1,26 @@
+CREATE TABLE pacientes (
+    codigo SERIAL PRIMARY KEY,                    -- 
+    data_cadastro DATE NOT NULL DEFAULT CURRENT_DATE, 
+    nome_paciente VARCHAR(150) NOT NULL,          
+    sexo VARCHAR(15),                             
+    data_nascimento DATE,                         
+    idade INT,                                    
+    estado_civil VARCHAR(30),                     
+    profissao VARCHAR(100),                      
+    naturalidade VARCHAR(100),                  
+    bi_identidade VARCHAR(20) UNIQUE,             
+    nif VARCHAR(20) UNIQUE,                       
+    seguro_saude VARCHAR(100),                    
+    nome_pai VARCHAR(150),                        
+    nome_mae VARCHAR(150),                        
+    endereco VARCHAR(200),                        
+    numero VARCHAR(10),                           
+    bairro VARCHAR(100),                          
+    municipio VARCHAR(100),                       
+    provincia VARCHAR(50),                        
+    telemovel_principal VARCHAR(20),              
+    telemovel_alternativo VARCHAR(20),          
+    trabalho_empresa VARCHAR(150),                
+    observacoes_medicas TEXT,                     
+    foto_paciente BYTEA                          
+);
