@@ -5,7 +5,7 @@ import psycopg2
 from dotenv import load_application_env  # Carrega as chaves secretas de forma invisível
 
 # Carrega as variáveis do arquivo .env
-load_application_env()
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET", "chave_padrao_segura")
