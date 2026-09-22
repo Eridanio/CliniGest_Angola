@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGE - Perfil do Paciente</title>
+    <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 30px auto; }
+        .profile-cover { background: linear-gradient(135deg, #0d6efd, #0043a8); height: 140px; border-radius: 8px 8px 0 0; }
+        .profile-card { background: white; border-radius: 0 0 8px 8px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative; }
+        .avatar-container { position: absolute; top: -70px; left: 40px; }
+        .profile-avatar { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 4px solid white; background-color: #e9ecef; }
+        .profile-header-text { margin-left: 160px; margin-top: -10px; min-height: 70px; }
+        .stats-box { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; text-align: center; }
+        .stats-num { font-size: 1.8rem; font-weight: bold; color: #0d6efd; }
+        .info-label { font-weight: bold; color: #495057; }
+        .btn-back { background-color: #212529; color: white; text-decoration: none; padding: 8px 20px; border-radius: 4px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="profile-cover"></div>
+        <div class="profile-card">
+            <div class="avatar-container">
+                {% if p['foto_paciente'] %}
+                    <img src="data:image/jpeg;base64,{{ p['foto_paciente']|b64encode }}" class="profile-avatar">
+                {% else %}
+                    <div class="profile-avatar" style="display: flex; align-items: center; justify-content: center; font-size: 50px; color: #6c757d;">👤</div>
+                {% endif %}
+            </div>
+            
+            <div class="profile-header-text">
+                <h2 class="mb-1">{{ p['nome_paciente'] }}</h2>
+                <p class="text-muted">Nº de Registo Técnico: CGE-00{{ p['codigo'] }}</p>
+            </div>
+
+            <hr class="mt-4 mb-4">
+
+            <!-- BLOCO DE NÚMEROS E EFECTIVOS (ESTATÍSTICAS) -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="stats-box">
+                        <div class="stats-num">{{ p['total_consultas'] or 0 }}</div>
+                        <div class="text-muted small">Consultas Realizadas</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-box">
+                        <div class="stats-num">{{ p['guias_solicitadas'] or 0 }}</div>
+                        <div class="text-muted small">Guias Médicas Emitidas</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-box">
+                        <div class="stats-num bg-danger text-white rounded py-1" style="font-size: 1.3rem;">{{ p['tipo_sanguineo'] or 'N/A' }}</div>
+                        <div class="text-muted small mt-1">Grupo Sanguíneo</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DADOS CADASTRAIS -->
+            <div class="row g-3">
+                <div class="col-md-6"><span class="info-label">Gênero:</span> {{ p['sexo'] }}</div>
+                <div class="col-md-6"><span class="info-label">Data de Nascimento:</span> {{ p['data_nascimento'] or '---' }}</div>
+                <div class="col-md-6"><span class="info-label">BI / Identidade:</span> {{ p['bi_identidade'] }}</div>
+                <div class="col-md-6"><span class="info-label">NIF:</span> {{ p['nif'] or '---' }}</div>
+                <div class="col-md-6"><span class="info-label">Telemóvel:</span> {{ p['telemovel_principal'] }}</div>
+                <div class="col-md-6"><span class="info-label">Seguro de Saúde:</span> {{ p['seguro_saude'] or 'Particular' }}</div>
+                <div class="col-md-6"><span class="info-label">Filiação:</span> {{ p['nome_pai'] or '---' }} (Pai) e {{ p['nome_mae'] or '---' }} (Mãe)</div>
+                <div class="col-md-6"><span class="info-label">Localidade:</span> {{ p['bairro'] or '' }}, {{ p['municipio'] }} / {{ p['provincia'] }}</div>
+                <div class="col-md-12"><span class="info-label">Data da Última Consulta:</span> {{ p['data_consulta'] or 'Nenhuma consulta registrada' }}</div>
+                <div class="col-md-12 mt-3">
+                    <span class="info-label">Alergias e Observações Médicas:</span>
+                    <p class="p-3 bg-light rounded border mt-1">{{ p['observacoes_medicas'] or 'Nenhuma observação clínica registrada.' }}</p>
+                </div>
+            </div>
+
+            <div class="text-end mt-4">
+                <a href="/lista" class="btn-back">📋 Voltar à Lista</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

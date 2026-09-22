@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CliniGest Angola - Pacientes Cadastrados</title>
+    <title>CGE - Pacientes Cadastrados</title>
     <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 1100px; margin: 30px auto; }
+        .container { max-width: 1150px; margin: 30px auto; }
         .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .header-area h2 { margin: 0; font-size: 1.8rem; color: #0d6efd; }
         .card { background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; }
@@ -21,6 +21,7 @@
         .btn-primary { background-color: #0d6efd; color: white; }
         .btn-dark { background-color: #212529; color: white; }
         .btn-sm { padding: 4px 8px; font-size: 0.8rem; margin-right: 5px; }
+        .btn-profile { background-color: #0d6efd; color: white; }
         .btn-edit { background-color: #ffc107; color: #000; }
         .btn-delete { background-color: #dc3545; color: white; }
         
@@ -38,7 +39,7 @@
 <body>
     <div class="container">
         <div class="header-area no-print">
-            <h2>📋 Pacientes Cadastrados</h2>
+            <h2>📋 Lista de Pacientes CGE</h2>
             <div>
                 <button onclick="window.print()" class="btn btn-dark">🖨️ Imprimir Lista</button>
                 <a href="/" class="btn btn-primary">+ Novo Paciente</a>
@@ -60,24 +61,25 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for paciente in pacientes %}
+                    {% for p in pacientes %}
                     <tr>
                         <td>
-                            {% if paciente[7] %}
-                                <img src="data:image/jpeg;base64,{{ paciente[7]|b64encode }}" class="avatar" onclick="abrirModal(this.src)">
+                            {% if p[7] %}
+                                <img src="data:image/jpeg;base64,{{ p[7]|b64encode }}" class="avatar" onclick="abrirModal(this.src)">
                             {% else %}
                                 <div style="width: 45px; height: 45px; border-radius: 50%; background-color: #e9ecef; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #6c757d; border: 2px solid #ced4da;">👤</div>
                             {% endif %}
                         </td>
-                        <td><strong>{{ paciente[0] }}</strong></td>
-                        <td>{{ paciente[1] }}</td>
-                        <td>{{ paciente[2] }}</td>
-                        <td>{{ paciente[3] or '---' }}</td>
-                        <td>{{ paciente[4] or '' }} / {{ paciente[5] or '' }}</td>
-                        <td>{{ paciente[6] or 'Particular' }}</td>
+                        <td><strong>{{ p[0] }}</strong></td>
+                        <td>{{ p[1] }}</td>
+                        <td>{{ p[2] }}</td>
+                        <td>{{ p[3] or '---' }}</td>
+                        <td>{{ p[4] or '' }} / {{ p[5] or '' }}</td>
+                        <td>{{ p[6] or 'Particular' }}</td>
                         <td class="no-print">
-                            <a href="/editar/{{ paciente[0] }}" class="btn btn-sm btn-edit">✏️ Editar</a>
-                            <a href="/eliminar/{{ paciente[0] }}" class="btn btn-sm btn-delete" onclick="return confirm('Deseja eliminar este paciente permanentemente?')">🗑️ Eliminar</a>
+                            <a href="/perfil/{{ p[0] }}" class="btn btn-sm btn-profile">👁️ Perfil</a>
+                            <a href="/editar/{{ p[0] }}" class="btn btn-sm btn-edit">✏️ Editar</a>
+                            <a href="/eliminar/{{ p[0] }}" class="btn btn-sm btn-delete" onclick="return confirm('Deseja eliminar este paciente permanentemente?')">🗑️ Eliminar</a>
                         </td>
                     </tr>
                     {% else %}
@@ -90,6 +92,7 @@
         </div>
     </div>
 
+    <!-- POPUP MODAL DA FOTO -->
     <div id="meuModal" class="img-modal" onclick="fecharModal()">
         <span class="close-modal" onclick="fecharModal()">&times;</span>
         <img class="img-modal-content" id="imgAmpliada">

@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CliniGest Angola - Cadastro de Paciente</title>
+    <title>CGE - Cadastro de Paciente</title>
     
-    <!-- LINK DO BOOTSTRAP OFFLINE ADICIONADO AQUI -->
+    <!-- BOOTSTRAP OFFLINE -->
     <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
     
     <style>
@@ -31,16 +31,18 @@
     <div class="container">
         <div class="card">
             <div class="card-header">
-                <h3>🇦🇴 Cadastro de Novo Paciente</h3>
+                <h3>🇦🇴 Cadastro Pacientes CGE</h3>
                 <a href="/lista" class="btn-ver">📋 Ver Pacientes</a>
             </div>
             <div class="card-body">
                 <form action="/salvar" method="POST" enctype="multipart/form-data">
                     <div class="row">
+                        <!-- Nome Completo -->
                         <div class="col col-6">
                             <label class="form-label">Nome Completo</label>
                             <input type="text" name="nome_paciente" class="form-control" required placeholder="Ex: Mateus António">
                         </div>
+                        <!-- Gênero -->
                         <div class="col col-3">
                             <label class="form-label">Sexo</label>
                             <select name="sexo" class="form-select">
@@ -48,17 +50,19 @@
                                 <option value="Feminino">Feminino</option>
                             </select>
                         </div>
+                        <!-- Data Nascimento -->
                         <div class="col col-3">
                             <label class="form-label">Data de Nascimento</label>
                             <input type="date" name="data_nascimento" class="form-control">
                         </div>
 
+                        <!-- Documentação -->
                         <div class="col col-4">
                             <label class="form-label">Bilhete de Identidade (BI)</label>
                             <input type="text" name="bi_identidade" class="form-control" placeholder="000000000LA000" required>
                         </div>
                         <div class="col col-4">
-                            <label class="form-label">NIF</label>
+                            <label class="form-label">NIP</label>
                             <input type="text" name="nif" class="form-control">
                         </div>
                         <div class="col col-4">
@@ -66,6 +70,7 @@
                             <input type="text" name="seguro_saude" class="form-control" placeholder="Ex: ENSA">
                         </div>
 
+                        <!-- Contactos -->
                         <div class="col col-6">
                             <label class="form-label">Telemóvel Principal</label>
                             <input type="tel" name="telemovel_principal" class="form-control" placeholder="+244 9xx xxx xxx">
@@ -75,7 +80,7 @@
                             <input type="tel" name="telemovel_alternativo" class="form-control">
                         </div>
 
-                        <!-- NOVOS CAMPOS: FILIAÇÃO -->
+                        <!-- Filiação -->
                         <div class="col col-6">
                             <label class="form-label">Nome do Pai</label>
                             <input type="text" name="nome_pai" class="form-control" placeholder="Nome completo do pai">
@@ -85,6 +90,7 @@
                             <input type="text" name="nome_mae" class="form-control" placeholder="Nome completo da mãe">
                         </div>
 
+                        <!-- Endereço -->
                         <div class="col col-4">
                             <label class="form-label">Bairro / Distrito</label>
                             <input type="text" name="bairro" class="form-control">
@@ -98,11 +104,35 @@
                             <input type="text" name="provincia" class="form-control" placeholder="Ex: Luanda">
                         </div>
 
+                        <!-- NOVOS CAMPOS EXIGIDOS PELO CLIENTE -->
+                        <div class="col col-3">
+                            <label class="form-label">Grupo Sanguíneo</label>
+                            <select name="tipo_sanguineo" class="form-select">
+                                <option value="">Não Sabido</option>
+                                <option value="A+">A+</option><option value="A-">A-</option>
+                                <option value="B+">B+</option><option value="B-">B-</option>
+                                <option value="AB+">AB+</option><option value="AB-">AB-</option>
+                                <option value="O+">O+</option><option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div class="col col-3">
+                            <label class="form-label">Consultas Feitas</label>
+                            <input type="number" name="total_consultas" class="form-control" value="0">
+                        </div>
+                        <div class="col col-3">
+                            <label class="form-label">Guias Solicitadas</label>
+                            <input type="number" name="guias_solicitadas" class="form-control" value="0">
+                        </div>
+                        <div class="col col-3">
+                            <label class="form-label">Data da Consulta</label>
+                            <input type="date" name="data_consulta" class="form-control">
+                        </div>
+
+                        <!-- Observações e Foto -->
                         <div class="col col-12">
                             <label class="form-label">Alergias e Observações Médicas</label>
                             <textarea name="observacoes_medicas" class="form-control" rows="3"></textarea>
                         </div>
-
                         <div class="col col-12">
                             <label class="form-label">Foto do Paciente</label>
                             <input type="file" name="foto_paciente" class="form-control" accept="image/*">
