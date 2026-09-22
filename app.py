@@ -1,17 +1,23 @@
 import base64
+import os
 from flask import Flask, render_template, request, redirect, url_for
 import psycopg2
+from dotenv import load_application_env  # Carrega as chaves secretas de forma invisível
+
+# Carrega as variáveis do arquivo .env
+load_application_env()
 
 app = Flask(__name__)
-app.secret_key = "clinigest_angola_secret_key"
+app.secret_key = os.getenv("FLASK_SECRET", "chave_padrao_segura")
 
+# Configuração Otimizada e Protegida de Conexão com o PostgreSQL
 def obter_conexao():
     return psycopg2.connect(
-        host="localhost",
-        database="cadastro_pacientes",
-        user="postgres",
-        password="maleko__2026_CrisMaleco",    # Mude para a sua senha do Postgres
-        port="5432"
+        host=os.getenv("DB_HOST", "localhost"),
+        database=os.getenv("DB_NAME", "cadastro_pacientes"),
+        user=os.getenv("DB_USER", "postgres"),
+        password=os.getenv("DB_PASSWORD"), # Lê diretamente da máquina, sem expor no código!
+        port=os.getenv("DB_PORT", "5432")
     )
 
 @app.template_filter('b64encode')
