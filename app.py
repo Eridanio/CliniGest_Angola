@@ -1,14 +1,30 @@
 import base64
 import os
+import sys
 from flask import Flask, render_template, request, redirect, url_for
 import psycopg2
-from dotenv import load_application_env  # Carrega as chaves secretas de forma invisível
+from dotenv import load_dotenv
 
-# Carrega as variáveis do arquivo .env
 load_dotenv()
 
-app = Flask(__name__)
-app.secret_key = os.getenv("FLASK_SECRET", "chave_padrao_segura")
+# Lógica essencial para o PyInstaller localizar as pastas HTML e CSS dentro do executável
+if getattr(sys, 'frozen', False):
+    # Se o app estiver rodando como executável (.exe)
+    base_dir = sys._MEIPASS
+else:
+    # Se o app estiver rodando como script Python normal
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Cria o Flask apontando explicitamente para os caminhos dinâmicos das pastas
+app = Flask(
+    __name__,
+    template_folder=os.path.join(base_dir, 'templates'),
+    static_folder=os.path.join(base_dir, 'static')
+)
+app.secret_key = os.getenv("FLASK_SECRET", "clinigest_angola_secret_key")
+
+# ... O resto da sua função obter_conexao() e rotas continua exatamente igual abaixo
+
 
 # Configuração Otimizada e Protegida de Conexão com o PostgreSQL
 def obter_conexao():
@@ -152,4 +168,11 @@ def eliminar_paciente(codigo):
     return redirect(url_for('lista_pacientes'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    import webbrowser
+    from threading import Timer
+
+    def abrir_navegador():
+        webbrowser.open_new("http://127.0.0.1:5000")
+
+    Timer(1.5, abrir_navegador).start()
+    app.run(debug=False) # Garanta que está False aqui!
