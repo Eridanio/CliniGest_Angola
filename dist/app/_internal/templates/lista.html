@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CliniGest Angola - Pacientes Cadastrados</title>
+    <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1100px; margin: 30px auto; }
+        .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .header-area h2 { margin: 0; font-size: 1.8rem; color: #0d6efd; }
+        .card { background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; }
+        .table { width: 100%; border-collapse: collapse; text-align: left; }
+        .table th { background-color: #0d6efd; color: white; padding: 15px; font-weight: 600; }
+        .table td { padding: 12px 15px; border-bottom: 1px solid #dee2e6; vertical-align: middle; }
+        .table tbody tr:hover { background-color: #f1f3f5; }
+        .avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid #0d6efd; background-color: #e9ecef; cursor: pointer; transition: transform 0.2s; }
+        .avatar:hover { transform: scale(1.1); }
+        .btn { padding: 8px 16px; border-radius: 4px; font-weight: bold; text-decoration: none; display: inline-block; font-size: 0.9rem; border: none; cursor: pointer; }
+        .btn-primary { background-color: #0d6efd; color: white; }
+        .btn-dark { background-color: #212529; color: white; }
+        .btn-sm { padding: 4px 8px; font-size: 0.8rem; margin-right: 5px; }
+        .btn-edit { background-color: #ffc107; color: #000; }
+        .btn-delete { background-color: #dc3545; color: white; }
+        
+        .img-modal { display: none; position: fixed; z-index: 1000; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); align-items: center; justify-content: center; }
+        .img-modal-content { max-width: 90%; max-height: 80%; border-radius: 8px; box-shadow: 0 4px 20px rgba(255,255,255,0.2); }
+        .close-modal { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; padding: 0; }
+            .card { box-shadow: none; border: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-area no-print">
+            <h2>📋 Pacientes Cadastrados</h2>
+            <div>
+                <button onclick="window.print()" class="btn btn-dark">🖨️ Imprimir Lista</button>
+                <a href="/" class="btn btn-primary">+ Novo Paciente</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Foto</th>
+                        <th>Cód.</th>
+                        <th>Nome do Paciente</th>
+                        <th>BI / Identidade</th>
+                        <th>Telemóvel</th>
+                        <th>Localidade</th>
+                        <th>Seguro</th>
+                        <th class="no-print">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for paciente in pacientes %}
+                    <tr>
+                        <td>
+                            {% if paciente[7] %}
+                                <img src="data:image/jpeg;base64,{{ paciente[7]|b64encode }}" class="avatar" onclick="abrirModal(this.src)">
+                            {% else %}
+                                <div style="width: 45px; height: 45px; border-radius: 50%; background-color: #e9ecef; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #6c757d; border: 2px solid #ced4da;">👤</div>
+                            {% endif %}
+                        </td>
+                        <td><strong>{{ paciente[0] }}</strong></td>
+                        <td>{{ paciente[1] }}</td>
+                        <td>{{ paciente[2] }}</td>
+                        <td>{{ paciente[3] or '---' }}</td>
+                        <td>{{ paciente[4] or '' }} / {{ paciente[5] or '' }}</td>
+                        <td>{{ paciente[6] or 'Particular' }}</td>
+                        <td class="no-print">
+                            <a href="/editar/{{ paciente[0] }}" class="btn btn-sm btn-edit">✏️ Editar</a>
+                            <a href="/eliminar/{{ paciente[0] }}" class="btn btn-sm btn-delete" onclick="return confirm('Deseja eliminar este paciente permanentemente?')">🗑️ Eliminar</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" style="text-align: center; color: #6c757d; padding: 30px;">Nenhum paciente cadastrado até ao momento.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="meuModal" class="img-modal" onclick="fecharModal()">
+        <span class="close-modal" onclick="fecharModal()">&times;</span>
+        <img class="img-modal-content" id="imgAmpliada">
+    </div>
+
+    <script>
+        function abrirModal(src) {
+            document.getElementById("meuModal").style.display = "flex";
+            document.getElementById("imgAmpliada").src = src;
+        }
+        function fecharModal() {
+            document.getElementById("meuModal").style.display = "none";
+        }
+    </script>
+</body>
+</html>
