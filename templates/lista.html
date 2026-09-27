@@ -38,13 +38,18 @@
 </head>
 <body>
     <div class="container">
-        <div class="header-area no-print">
-            <h2>📋 Lista de Pacientes CGE</h2>
-            <div>
-                <button onclick="window.print()" class="btn btn-dark">🖨️ Imprimir Lista</button>
-                <a href="/" class="btn btn-primary">+ Novo Paciente</a>
-            </div>
-        </div>
+        <div class="header-area no-print" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <!-- LOGÓTIPO OFICIAL NA LISTA -->
+        <img src="{{ url_for('static', filename='logo.JFIF') }}" alt="Logo" style="height: 45px; background: white; padding: 4px; border-radius: 6px; border: 1px solid #dee2e6;">
+        <h2 style="margin: 0; font-size: 1.8rem; color: #0d6efd;">Lista de Pacientes - {{ nome_clinica }}</h2>
+    </div>
+    <div>
+        <button onclick="window.print()" class="btn btn-dark">🖨️ Imprimir Lista</button>
+        <a href="/" class="btn btn-primary">+ Novo Paciente</a>
+    </div>
+</div>
+
 
         <div class="card">
             <table class="table">
