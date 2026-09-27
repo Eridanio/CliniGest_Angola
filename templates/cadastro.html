@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CGE - Cadastro de Paciente</title>
+    <title>Guest - Cadastro de Paciente</title>
     
     <!-- BOOTSTRAP OFFLINE -->
     <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
@@ -30,10 +30,15 @@
 <body>
     <div class="container">
         <div class="card">
-            <div class="card-header">
-                <h3>🇦🇴 Cadastro Pacientes CGE</h3>
-                <a href="/lista" class="btn-ver">📋 Ver Pacientes</a>
-            </div>
+            <div class="card-header" style="background-color: #0d6efd; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;">
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <!-- CHAMADA DO LOGÓTIPO OFICIAL -->
+        <img src="{{ url_for('static', filename='logo.JFIF') }}" alt="Logo" style="height: 45px; background: white; padding: 4px; border-radius: 6px;">
+        <h3 style="margin: 0; font-size: 1.5rem;">{{ nome_clinica }}</h3>
+    </div>
+    <a href="/lista" class="btn-ver">📋 Ver Pacientes</a>
+</div>
+
             <div class="card-body">
                 <form action="/salvar" method="POST" enctype="multipart/form-data">
                     <div class="row">
@@ -62,7 +67,7 @@
                             <input type="text" name="bi_identidade" class="form-control" placeholder="000000000LA000" required>
                         </div>
                         <div class="col col-4">
-                            <label class="form-label">NIP</label>
+                            <label class="form-label">NIF</label>
                             <input type="text" name="nif" class="form-control">
                         </div>
                         <div class="col col-4">

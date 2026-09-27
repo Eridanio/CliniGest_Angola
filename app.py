@@ -3,12 +3,11 @@ import os
 import sys
 from flask import Flask, render_template, request, redirect, url_for
 import psycopg2
-from psycopg2.extras import RealDictCursor # Importado no topo para segurança global
+from psycopg2.extras import RealDictCursor
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# Lógica essencial para o PyInstaller localizar as pastas HTML e CSS dentro do executável
 if getattr(sys, 'frozen', False):
     base_dir = sys._MEIPASS
 else:
@@ -19,7 +18,7 @@ app = Flask(
     template_folder=os.path.join(base_dir, 'templates'),
     static_folder=os.path.join(base_dir, 'static')
 )
-app.secret_key = os.getenv("FLASK_SECRET", "clinigest_angola_secret_key")
+app.secret_key = os.getenv("FLASK_SECRET", "cliniguest_angola_secret_key")
 
 def obter_conexao():
     return psycopg2.connect(
@@ -41,7 +40,8 @@ def b64encode_filter(data):
 
 @app.route('/')
 def index():
-    return render_template('cadastro.html')
+    nome_hospital = os.getenv("CLINICA_NOME", "CliniGuest Angola")
+    return render_template('cadastro.html', nome_clinica=nome_hospital)
 
 @app.route('/lista')
 def lista_pacientes():
@@ -55,7 +55,9 @@ def lista_pacientes():
     lista = cursor.fetchall()
     cursor.close()
     conexao.close()
-    return render_template('lista.html', pacientes=lista)
+    
+    nome_hospital = os.getenv("CLINICA_NOME", "CliniGuest Angola")
+    return render_template('lista.html', pacientes=lista, nome_clinica=nome_hospital)
 
 @app.route('/salvar', methods=['POST'])
 def salvar_paciente():
@@ -111,12 +113,14 @@ def perfil_paciente(codigo):
     paciente = cursor.fetchone()
     cursor.close()
     conexao.close()
-    return render_template('perfil.html', p=paciente)
+    
+    nome_hospital = os.getenv("CLINICA_NOME", "CliniGuest Angola")
+    return render_template('perfil.html', p=paciente, nome_clinica=nome_hospital)
 
 @app.route('/editar/<int:codigo>')
 def editar_paciente(codigo):
     conexao = obter_conexao()
-    cursor = conexao.cursor(cursor_factory=RealDictCursor) # Ajustado para ler o dicionário em editar.html
+    cursor = conexao.cursor(cursor_factory=RealDictCursor)
     cursor.execute("""
         SELECT codigo, nome_paciente, sexo, data_nascimento, bi_identidade, nif, seguro_saude, 
                telemovel_principal, telemovel_alternativo, nome_pai, nome_mae, bairro, municipio, 
@@ -126,7 +130,9 @@ def editar_paciente(codigo):
     paciente = cursor.fetchone()
     cursor.close()
     conexao.close()
-    return render_template('editar.html', p=paciente)
+    
+    nome_hospital = os.getenv("CLINICA_NOME", "CliniGuest Angola")
+    return render_template('editar.html', p=paciente, nome_clinica=nome_hospital)
 
 @app.route('/atualizar/<int:codigo>', methods=['POST'])
 def atualizar_paciente(codigo):
@@ -187,10 +193,47 @@ def eliminar_paciente(codigo):
     conexao.close()
     return redirect(url_for('lista_pacientes'))
 
+from cryptography.fernet import Fernet
+from datetime import datetime
+from flask import redirect, url_for, request
+import os
+
+# A assinatura secreta tem de ser EXATAMENTE igual à do gerador
+CHAVE_MESTRA = b'oOMfM4mgILQkjCcbxA3pX116WOOuwvEaAB5OMBbs0oM='
+fernet = Fernet(CHAVE_MESTRA)
+
+@app.before_request
+def verificar_licenca():
+    if request.endpoint in ['licenca_expirada', 'static']:
+        return None
+        
+    # Agora lemos a CHAVE_LICENCA complexa enviada por si
+    chave_licenca = os.getenv("CHAVE_LICENCA")
+    
+    if not chave_licenca:
+        return redirect(url_for('licenca_expirada'))
+        
+    try:
+        # Tenta descriptografar a chave para extrair a data real escondida
+        data_descriptografada = fernet.decrypt(chave_licenca.encode('utf-8')).decode('utf-8')
+        data_limite = datetime.strptime(data_descriptografada.strip(), "%Y-%m-%d").date()
+        data_atual = datetime.now().date()
+        
+        # Bloqueia se o tempo do contrato terminar
+        if data_atual > data_limite:
+            return redirect(url_for('licenca_expirada'))
+            
+    except Exception:
+        # Se tentarem alterar o texto da chave ou sabotar, o sistema tranca por segurança
+        return redirect(url_for('licenca_expirada'))
+        
+    return None
+
+
 if __name__ == '__main__':
     import webbrowser
     from threading import Timer
     def abrir_navegador():
         webbrowser.open_new("http://127.0.0.1:5000")
     Timer(1.5, abrir_navegador).start()
-    app.run(debug=True)
+    app.run(debug=False)
