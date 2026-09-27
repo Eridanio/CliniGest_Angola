@@ -8,83 +8,115 @@
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; }
         .container { max-width: 900px; margin: 30px auto; }
-        .profile-cover { background: linear-gradient(135deg, #0d6efd, #0043a8); height: 140px; border-radius: 8px 8px 0 0; }
+        /* CAPA AZUL DO PERFIL COM LOGO FLUTUANTE */
+        .profile-cover { 
+            background: linear-gradient(135deg, #0d6efd, #0043a8); 
+            height: 140px; 
+            border-radius: 8px 8px 0 0; 
+            position: relative;
+        }
+        .cover-logo-area {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            text-align: right;
+        }
+        .cover-logo-img {
+            height: 40px; 
+            background: white; 
+            padding: 4px; 
+            border-radius: 6px; 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        .cover-logo-text {
+            font-size: 0.75rem; 
+            color: rgba(255, 255, 255, 0.85); 
+            display: block; 
+            margin-top: 3px;
+            font-weight: 500;
+        }
+        /* CORPO DO CARD CADASTRAL */
         .profile-card { background: white; border-radius: 0 0 8px 8px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative; }
         .avatar-container { position: absolute; top: -70px; left: 40px; }
-        .profile-avatar { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 4px solid white; background-color: #e9ecef; }
+        .profile-avatar { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 4px solid white; background-color: #e9ecef; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .profile-header-text { margin-left: 160px; margin-top: -10px; min-height: 70px; }
-        .stats-box { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; text-align: center; }
+        .stats-box { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; text-align: center; box-shadow: inset 0 1px 3px rgba(0,0,0,0.02); }
         .stats-num { font-size: 1.8rem; font-weight: bold; color: #0d6efd; }
         .info-label { font-weight: bold; color: #495057; }
-        .btn-back { background-color: #212529; color: white; text-decoration: none; padding: 8px 20px; border-radius: 4px; font-weight: bold; }
+        .btn-back { background-color: #212529; color: white; text-decoration: none; padding: 8px 20px; border-radius: 4px; font-weight: bold; transition: background 0.2s; }
+        .btn-back:hover { background-color: #000; }
+        @media print { .no-print { display: none !important; } }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="profile-cover"></div>
+        <!-- CAPA AZUL COM O LOGOTIPO REPOSICIONADO -->
+        <div class="profile-cover">
+            <div class="cover-logo-area no-print">
+                <img src="{{ url_for('static', filename='logo.JFIF') }}" alt="Logo" class="cover-logo-img">
+                <span class="cover-logo-text">{{ nome_clinica }}</span>
+            </div>
+        </div>
+
         <div class="profile-card">
+            <!-- FOTO FLUTUANTE EM DESTAQUE -->
             <div class="avatar-container">
                 {% if p['foto_paciente'] %}
                     <img src="data:image/jpeg;base64,{{ p['foto_paciente']|b64encode }}" class="profile-avatar">
                 {% else %}
-                    <div class="profile-avatar" style="display: flex; align-items: center; justify-content: center; font-size: 50px; color: #6c757d;">👤</div>
+                    <div class="profile-avatar" style="display: flex; align-items: center; justify-content: center; font-size: 50px; color: #6c757d; background-color: #e9ecef;">👤</div>
                 {% endif %}
             </div>
             
+            <!-- IDENTIFICAÇÃO DO PACIENTE -->
             <div class="profile-header-text">
-                <h2 class="mb-1">{{ p['nome_paciente'] }}</h2>
-                <p class="text-muted">Nº de Registo Técnico: Guest{{ p['codigo'] }}</p>
+                <h2 class="mb-1 fw-bold" style="color: #212529;">{{ p['nome_paciente'] }}</h2>
+                <p class="text-muted mb-0">Nº de Registo Técnico: Guest{{ p['codigo'] }}</p>
             </div>
-
-             <!-- LOGÓTIPO OFICIAL NO PERFIL -->
-    <div class="no-print" style="margin-top: 10px; margin-right: 20px;">
-        <img src="{{ url_for('static', filename='logo.JFIF') }}" alt="Logo" style="height: 40px; background: white; padding: 4px; border-radius: 6px; border: 1px solid #dee2e6;">
-        <span class="small text-muted d-block text-end" style="font-size: 0.75rem;">{{ nome_clinica }}</span>
-    </div>
-</div>
 
             <hr class="mt-4 mb-4">
 
-            <!-- BLOCO DE NÚMEROS E EFECTIVOS (ESTATÍSTICAS) -->
+            <!-- BLOCO DE EFECTIVOS E HISTÓRICO DE MENSALIDADES -->
             <div class="row g-3 mb-4">
                 <div class="col-md-4">
                     <div class="stats-box">
                         <div class="stats-num">{{ p['total_consultas'] or 0 }}</div>
-                        <div class="text-muted small">Consultas Realizadas</div>
+                        <div class="text-muted small fw-semibold">Consultas Realizadas</div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="stats-box">
                         <div class="stats-num">{{ p['guias_solicitadas'] or 0 }}</div>
-                        <div class="text-muted small">Guias Médicas Emitidas</div>
+                        <div class="text-muted small fw-semibold">Guias Médicas Emitidas</div>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="stats-box">
-                        <div class="stats-num bg-danger text-white rounded py-1" style="font-size: 1.3rem;">{{ p['tipo_sanguineo'] or 'N/A' }}</div>
-                        <div class="text-muted small mt-1">Grupo Sanguíneo</div>
+                    <div class="stats-box d-flex flex-column align-items-center justify-content-center" style="height: 100%;">
+                        <div class="bg-danger text-white rounded fw-bold px-4 py-2" style="font-size: 1.2rem; min-width: 100px;">{{ p['tipo_sanguineo'] or 'N/A' }}</div>
+                        <div class="text-muted small fw-semibold mt-2">Grupo Sanguíneo</div>
                     </div>
                 </div>
             </div>
 
-            <!-- DADOS CADASTRAIS -->
-            <div class="row g-3">
+            <!-- DADOS CADASTRAIS COMPLETOS -->
+            <div class="row g-3" style="font-size: 0.95rem; line-height: 1.6;">
                 <div class="col-md-6"><span class="info-label">Gênero:</span> {{ p['sexo'] }}</div>
                 <div class="col-md-6"><span class="info-label">Data de Nascimento:</span> {{ p['data_nascimento'] or '---' }}</div>
                 <div class="col-md-6"><span class="info-label">BI / Identidade:</span> {{ p['bi_identidade'] }}</div>
                 <div class="col-md-6"><span class="info-label">NIF:</span> {{ p['nif'] or '---' }}</div>
-                <div class="col-md-6"><span class="info-label">Telemóvel:</span> {{ p['telemovel_principal'] }}</div>
+                <div class="col-md-6"><span class="info-label">Telemóvel:</span> {{ p['telemovel_principal'] or '---' }}</div>
                 <div class="col-md-6"><span class="info-label">Seguro de Saúde:</span> {{ p['seguro_saude'] or 'Particular' }}</div>
                 <div class="col-md-6"><span class="info-label">Filiação:</span> {{ p['nome_pai'] or '---' }} (Pai) e {{ p['nome_mae'] or '---' }} (Mãe)</div>
                 <div class="col-md-6"><span class="info-label">Localidade:</span> {{ p['bairro'] or '' }}, {{ p['municipio'] }} / {{ p['provincia'] }}</div>
                 <div class="col-md-12"><span class="info-label">Data da Última Consulta:</span> {{ p['data_consulta'] or 'Nenhuma consulta registrada' }}</div>
-                <div class="col-md-12 mt-3">
+                
+                <div class="col-md-12 mt-4">
                     <span class="info-label">Alergias e Observações Médicas:</span>
-                    <p class="p-3 bg-light rounded border mt-1">{{ p['observacoes_medicas'] or 'Nenhuma observação clínica registrada.' }}</p>
+                    <p class="p-3 bg-light rounded border mt-1 mb-0 text-dark" style="white-space: pre-line; background-color: #f8f9fa;">{{ p['observacoes_medicas'] or 'Nenhuma observação clínica registrada.' }}</p>
                 </div>
             </div>
 
-            <div class="text-end mt-4">
+            <div class="text-end mt-4 no-print">
                 <a href="/lista" class="btn-back">📋 Voltar à Lista</a>
             </div>
         </div>
