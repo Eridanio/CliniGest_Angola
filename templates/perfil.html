@@ -11,9 +11,10 @@
         /* CAPA AZUL DO PERFIL COM LOGO FLUTUANTE */
         .profile-cover { 
             background: linear-gradient(135deg, #0d6efd, #0043a8); 
-            height: 140px; 
+            height: 160px; /* Aumentamos um pouco a altura para dar mais destaque */
             border-radius: 8px 8px 0 0; 
             position: relative;
+            overflow: hidden; /* Garante que a imagem não saia das bordas arredondadas */
         }
         .cover-logo-area {
             position: absolute;
@@ -22,12 +23,14 @@
             text-align: right;
         }
         .cover-logo-img {
-            height: 40px; 
-            background: white; 
-            padding: 4px; 
-            border-radius: 6px; 
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Faz a imagem esticar e cobrir toda a barra azul sem distorcer */
+            position: absolute;
+            top: 0;
+            left: 0;
         }
+
         .cover-logo-text {
             font-size: 0.75rem; 
             color: rgba(255, 255, 255, 0.85); 
@@ -36,6 +39,7 @@
             font-weight: 500;
         }
         /* CORPO DO CARD CADASTRAL */
+        /* Sombreamento opcional para destacar a foto do paciente sobre a capa */
         .profile-card { background: white; border-radius: 0 0 8px 8px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative; }
         .avatar-container { position: absolute; top: -70px; left: 40px; }
         .profile-avatar { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 4px solid white; background-color: #e9ecef; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
@@ -49,16 +53,15 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- CAPA AZUL COM O LOGOTIPO REPOSICIONADO -->
+        <div class="container">
+        <!-- AGORA A IMAGEM PREENCHE A BARRA TODA DE PONTA A PONTA -->
         <div class="profile-cover">
-            <div class="cover-logo-area no-print">
-                <img src="{{ url_for('static', filename='logo.JFIF') }}" alt="Logo" class="cover-logo-img">
-                <span class="cover-logo-text">{{ nome_clinica }}</span>
-            </div>
+            <img src="{{ url_for('static', filename='logo.JFIF') }}" alt="Capa CliniGuest" class="cover-logo-img">
         </div>
 
         <div class="profile-card">
+            <!-- O resto do código (avatar-container, profile-header-text, etc.) continua exatamente igual -->
+
             <!-- FOTO FLUTUANTE EM DESTAQUE -->
             <div class="avatar-container">
                 {% if p['foto_paciente'] %}
